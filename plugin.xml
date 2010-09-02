@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.opensixen.swing.OrderHelperContentProvider"
+         name="Sales Order"
+         point="org.opensixen.osgi.interfaces.IHelperContentProvider">
+      <provider
+            class="org.opensixen.swing.OrderHelperContentProvider"
+            windowName="Sales Order">
+      </provider>
+   </extension>
+   <extension
+         id="org.opensixen.swing.ElementValueHelperContentProvider"
+         name="Account Element"
+         point="org.opensixen.osgi.interfaces.IHelperContentProvider">
+      <provider
+            class="org.opensixen.swing.AccountDataHelperContentProvider"
+            windowName="Account Element">
+      </provider>
+   </extension>
+
+</plugin>
