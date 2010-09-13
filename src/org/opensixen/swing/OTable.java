@@ -3,6 +3,7 @@
  */
 package org.opensixen.swing;
 
+import java.math.BigDecimal;
 import java.util.Properties;
 
 import javax.swing.table.TableColumn;
@@ -21,6 +22,7 @@ import org.opensixen.model.ColumnDefinition;
  */
 public class OTable extends VTable {
 
+	private static final long serialVersionUID = 1L;
 	private Properties ctx;
 	
 	
@@ -56,12 +58,15 @@ public class OTable extends VTable {
 				displayType = DisplayType.String;
 			}
 			
-			tc.setCellRenderer(new VCellRenderer(displayType));
+			tc.setCellRenderer(new OCellRenderer(displayType));
 			// TODO : CellEditor
 			
 			tc.setHeaderValue(definition.getTitle());
 			tc.setHeaderRenderer(new VHeaderRenderer(displayType));
 		}
+		
+				
+		
 		return size;
 	}
 	
