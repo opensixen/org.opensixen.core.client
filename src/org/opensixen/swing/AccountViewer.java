@@ -48,12 +48,9 @@ public class AccountViewer extends CFrame implements IAccountViewer {
 
 	private static final long serialVersionUID = 1L;
 	private int AD_Client_ID;
-	// private int AD_Table_ID;
-	// private int record_ID;
+
 
 	private Properties ctx;
-
-	// private OTable table;
 
 	private SimpleDateFormat df;
 
@@ -104,6 +101,12 @@ public class AccountViewer extends CFrame implements IAccountViewer {
 
 	}
 
+	/**
+	 * Create a panel with a Journal (asiento)
+	 * @param AD_Table_ID
+	 * @param record_ID
+	 * @return
+	 */
 	private CPanel getJournalViewer(final int AD_Table_ID, final int record_ID) {
 		CPanel container = new CPanel();
 		final FactAcctTableModel tableModel = new FactAcctTableModel(Env.getCtx(),	getQuery(AD_Table_ID, record_ID));
@@ -171,7 +174,7 @@ public class AccountViewer extends CFrame implements IAccountViewer {
 	}
 
 	/**
-	 * Dynamic init
+	 * Generate MQuery with AD_Table_ID and record_ID
 	 */
 	private MQuery getQuery(int AD_Table_ID, int record_ID) {
 

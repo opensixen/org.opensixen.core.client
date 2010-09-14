@@ -49,4 +49,29 @@ public class AccountDataHelperContentProvider extends AbstractTableHelperContent
 		return cols;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.opensixen.swing.AbstractTableHelperContentProvider#getPosition()
+	 */
+	@Override
+	public int getPosition() {
+		return HelperContentPanel.POSITION_TOP;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.opensixen.swing.AbstractTableHelperContentProvider#getTabName()
+	 */
+	@Override
+	public String getTabName() {
+		return "Cuentas";
+	}
+
+	/* (non-Javadoc)
+	 * @see org.opensixen.swing.AbstractTableHelperContentProvider#isPriority()
+	 */
+	@Override
+	public boolean isPriority() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

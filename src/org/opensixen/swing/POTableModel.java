@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import org.compiere.apps.search.Info_Column;
@@ -27,7 +28,7 @@ import org.opensixen.model.GroupVariable;
  * @author harlock
  *
  */
-public abstract class POTableModel implements OTableModel {
+public abstract class POTableModel extends DefaultTableModel implements OTableModel {
 
 	protected Properties ctx;
 	private PO[] model;
@@ -260,9 +261,12 @@ public abstract class POTableModel implements OTableModel {
 			}
 		}
 		
-		model = poArray.toArray(model);
-		
+		model = poArray.toArray(model);		
 	}	
+	
+	
+	
+	
 }
 
 class GroupIndex	{

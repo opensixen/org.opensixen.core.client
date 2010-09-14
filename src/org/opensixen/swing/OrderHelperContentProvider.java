@@ -97,9 +97,35 @@ public class OrderHelperContentProvider extends AbstractTableHelperContentProvid
 		
 		selectRecord(order.getC_Order_ID());
 	}
-	
-	
 
-	
+
+
+	/* (non-Javadoc)
+	 * @see org.opensixen.swing.AbstractTableHelperContentProvider#getPosition()
+	 */
+	@Override
+	public int getPosition() {
+		return HelperContentPanel.POSITION_TOP;
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see org.opensixen.swing.AbstractTableHelperContentProvider#getTabName()
+	 */
+	@Override
+	public String getTabName() {
+		return "Pedidos";
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see org.opensixen.swing.AbstractTableHelperContentProvider#isPriority()
+	 */
+	@Override
+	public boolean isPriority() {
+		return false;
+	}
 
 }

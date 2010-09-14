@@ -54,7 +54,8 @@ public class OrderTableModel extends POTableModel {
 	 */
 	@Override
 	public ColumnDefinition[] getColumnDefinitions() {
-		ColumnDefinition[] columns = {new ColumnDefinition(X_C_Order_Header_v.COLUMNNAME_C_Order_ID, "ID", Integer.class), 
+		ColumnDefinition[] columns = {
+				//new ColumnDefinition(X_C_Order_Header_v.COLUMNNAME_C_Order_ID, "ID", Integer.class), 
 				new ColumnDefinition(X_C_Order_Header_v.COLUMNNAME_DateOrdered, "Fecha", Timestamp.class),
 				new ColumnDefinition(X_C_Order_Header_v.COLUMNNAME_Name, "Entidad", String.class),
 				new ColumnDefinition( X_C_Order_Header_v.COLUMNNAME_DocumentType, "Tipo",  String.class),

@@ -25,19 +25,31 @@ import org.compiere.model.MQuery;
 import org.compiere.swing.CPanel;
 import org.compiere.swing.CScrollPane;
 import org.compiere.swing.CTable;
+import org.compiere.util.CLogger;
 import org.opensixen.osgi.interfaces.IHelperContentProvider;
 
 /**
- * @author harlock
+ * Allow creation of single tab HelperContent
+ * 
+ * @author Eloy Gomez
  *
  */
 public abstract class AbstractTableHelperContentProvider implements IHelperContentProvider, MouseListener {
+	
+	public static final String COMMAND_SELECT_RECORD="cmd_select_record";
+	
+	protected CLogger log = CLogger.getCLogger(getClass());
 	
 	protected OTable table;
 	protected Properties ctx;
 
 	public abstract TableModel getTableModel(MQuery query);
 	public abstract void initTable();
+	
+	public abstract int getPosition();
+	public abstract String getTabName();
+	public abstract boolean isPriority();
+	
 	private EPanel panel;
 	protected GridTab gc;
 	/** Indice entre el indice en la tabla y el id del registro	*/ 
@@ -51,7 +63,15 @@ public abstract class AbstractTableHelperContentProvider implements IHelperConte
 	 * y añadimos los listeners
 	 */
 	@Override
-	public void initContent(Properties ctx, CPanel parent, EPanel panel) {
+	public HelperContentPanel[] getPanels (Properties ctx, EPanel panel) {
+		HelperContentPanel parent = new HelperContentPanel();
+		parent.setLayout(new BorderLayout(5, 5));
+		
+		// Setup single tab
+		parent.setPosition(getPosition());
+		parent.setTabName(getTabName());
+		parent.setPriority(isPriority());
+		
 		this.ctx = ctx;
 		this.panel = panel;
 		this.gc = panel.getCurrentTab();
@@ -72,6 +92,11 @@ public abstract class AbstractTableHelperContentProvider implements IHelperConte
 		table.addMouseListener(this);
 		// Custom table options
 		initTable();
+		
+		// Return panels
+		HelperContentPanel[] panels = {parent};
+		return panels;
+		
 	}
 	
 	private void reindex()	{
@@ -94,6 +119,9 @@ public abstract class AbstractTableHelperContentProvider implements IHelperConte
 		}		
 		gc.setCurrentRow(indexMap.get(record_ID));
 		gc.dataRefresh();
+		
+		// Fire event
+		panel.fireActionPerformed(new ActionEvent(this, record_ID, COMMAND_SELECT_RECORD ));
 	}
 	
 	/**
