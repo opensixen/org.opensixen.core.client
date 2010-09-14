@@ -19,5 +19,12 @@
             windowName="Account Element">
       </provider>
    </extension>
+   <extension
+         id="org.opensixen.swing.AccountViewer"
+         point="org.opensixen.osgi.interfaces.IAccountViewer">
+      <viewer
+            class="org.opensixen.swing.AccountViewer">
+      </viewer>
+   </extension>
 
 </plugin>

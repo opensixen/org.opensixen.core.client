@@ -105,29 +105,25 @@ public class AccountViewer extends CFrame implements IAccountViewer {
 	}
 
 	private CPanel getJournalViewer(final int AD_Table_ID, final int record_ID) {
-		final FactAcctTableModel tableModel = new FactAcctTableModel(Env.getCtx(),
-				getQuery(AD_Table_ID, record_ID));
-		if (tableModel.isEmpty()) {
-			return null;
-		}
-
 		CPanel container = new CPanel();
-
+		final FactAcctTableModel tableModel = new FactAcctTableModel(Env.getCtx(),	getQuery(AD_Table_ID, record_ID));
+		StringBuffer title = new StringBuffer();
+		StringBuffer docDescription = new StringBuffer(); 
+		
+		if (!tableModel.isEmpty()) {
+			title.append("Asiento ").append(tableModel.getJournalNO()).append(" ");
+			title.append(df.format(new Date(tableModel.getDateAcct().getTime())));
+			
+			docDescription.append(tableModel.getTableDescription()).append(" ")	.append(tableModel.getDocumentNO());
+		}
 		// Create Title String
-		StringBuffer title = new StringBuffer("Asiento ").append(
-				tableModel.getJournalNO()).append(" ");
-		title.append(df.format(new Date(tableModel.getDateAcct().getTime())));
-
+		
 		container.setBorder(BorderFactory.createTitledBorder(title.toString()));
 		container.setLayout(new BorderLayout());
 
 		CPanel headerPanel = new CPanel();
 		container.add(headerPanel, BorderLayout.NORTH);
 		CLabel l = new CLabel();
-
-		StringBuffer docDescription = new StringBuffer();
-		docDescription.append(tableModel.getTableDescription()).append(" ")
-				.append(tableModel.getDocumentNO());
 
 		l.setText(docDescription.toString());
 		l.setFontBold(true);
@@ -149,7 +145,7 @@ public class AccountViewer extends CFrame implements IAccountViewer {
 		table.packAll();
 
 		CPanel footerPanel = new CPanel();
-		footerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		footerPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
 		bRePost = new CButton();
 		bRePost.setText(Msg.getMsg(Env.getCtx(), "RePost"));
