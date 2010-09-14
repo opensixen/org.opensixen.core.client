@@ -13,6 +13,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 import org.compiere.apps.search.Info_Column;
+import org.compiere.model.MDocType;
 import org.compiere.model.MQuery;
 import org.compiere.model.PO;
 import org.compiere.util.Env;
@@ -25,9 +26,7 @@ import org.opensixen.model.X_C_Order_Header_v;
  * @author harlock
  *
  */
-public class OrderTableModel extends POTableModel {
-
-	PO[] orders;
+public class OrderTableModel extends POTableModel {		
 	
 	/**
 	 * @param ctx
@@ -41,12 +40,7 @@ public class OrderTableModel extends POTableModel {
 	 */
 	@Override
 	protected PO[] getModel(MQuery query) {
-			
-		if (orders == null)	{
-			orders = getOrders(query);			
-		}
-		
-		return orders;
+		return getOrders(query);
 	}
 
 	/* (non-Javadoc)
@@ -72,9 +66,8 @@ public class OrderTableModel extends POTableModel {
 	 * @return
 	 */
 	private PO[] getOrders(MQuery query)	{
-		String where = query.getWhereClause(false);
 		ArrayList<QParam> params = new ArrayList<QParam>();
-		params.add(new QParam(X_C_Order_Header_v.COLUMNNAME_IsSOTrx, true));
+		//params.add(new QParam(X_C_Order_Header_v.COLUMNNAME_IsSOTrx, isSoTrx()));
 		params.add(new QParam(X_C_Order_Header_v.COLUMNNAME_AD_Client_ID, Env.getAD_Client_ID(ctx)));
 		int AD_Org_ID = Env.getAD_Org_ID(ctx); 
 
@@ -82,18 +75,22 @@ public class OrderTableModel extends POTableModel {
 			params.add(new QParam(X_C_Order_Header_v.COLUMNNAME_AD_Org_ID, AD_Org_ID));
 		}
 		
-		if (!where.equals("()"))	{
-			where = getWhere(query);
-			params.add(new QParam(where));
-		}
-		
+		if (query != null)	{
+			//String where = query.getWhereClause(false);
+			String where = getWhere(query);
+			if (!where.equals("()") && where.length() > 0)	{				
+				params.add(new QParam(where));
+			}
+		}		
 		
 		QParam[] qp = null;
 		if (params.size() > 0)	{
 			qp = params.toArray(new QParam[params.size()]);
 		}
 		
-		List<X_C_Order_Header_v> list = POFactory.getList(ctx, X_C_Order_Header_v.class, qp);
+		String[] order = {X_C_Order_Header_v.COLUMNNAME_DateOrdered + " desc", X_C_Order_Header_v.COLUMNNAME_C_BPartner_ID};		
+		
+		List<X_C_Order_Header_v> list = POFactory.getList(ctx, X_C_Order_Header_v.class, qp, order, null);
 		
 		if (list == null)	{
 			return null;
@@ -102,5 +99,4 @@ public class OrderTableModel extends POTableModel {
 		PO[] o = new PO[list.size()];
 		return list.toArray(o);
 	}
-	
 }

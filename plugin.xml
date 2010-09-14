@@ -26,5 +26,13 @@
             class="org.opensixen.swing.AccountViewer">
       </viewer>
    </extension>
+   <extension
+         id="org.opensixen.swing.OrderLinesHelperContentProvider"
+         point="org.opensixen.osgi.interfaces.IHelperContentProvider">
+      <provider
+            class="org.opensixen.swing.OrderLinesHelperContentProvider"
+            windowName="Sales Order">
+      </provider>
+   </extension>
 
 </plugin>

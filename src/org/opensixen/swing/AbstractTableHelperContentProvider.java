@@ -41,6 +41,7 @@ public abstract class AbstractTableHelperContentProvider implements IHelperConte
 	protected CLogger log = CLogger.getCLogger(getClass());
 	
 	protected OTable table;
+	
 	protected Properties ctx;
 
 	public abstract TableModel getTableModel(MQuery query);
@@ -117,7 +118,13 @@ public abstract class AbstractTableHelperContentProvider implements IHelperConte
 			gc.query(false);
 			reindex();
 		}		
-		gc.setCurrentRow(indexMap.get(record_ID));
+		
+		Integer current = indexMap.get(record_ID);
+		if (current == null)	{
+			log.severe("Record out of index: " + record_ID);
+		}
+		
+		gc.setCurrentRow(current);
 		gc.dataRefresh();
 		
 		// Fire event
@@ -130,6 +137,15 @@ public abstract class AbstractTableHelperContentProvider implements IHelperConte
 	public EPanel getPanel() {
 		return panel;
 	}
+	
+	/**
+	 * 
+	 * @see javax.swing.JTable#updateUI()
+	 */
+	public void updateUI() {
+		table.updateUI();
+	}
+		
 	/* (non-Javadoc)
 	 * @see org.opensixen.swing.IPanelListener#disposePerformed()
 	 */

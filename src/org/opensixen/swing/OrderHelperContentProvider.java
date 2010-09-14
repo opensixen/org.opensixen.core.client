@@ -12,6 +12,7 @@ import javax.swing.table.TableModel;
 import org.compiere.model.GridTab;
 import org.compiere.model.MQuery;
 import org.compiere.model.PO;
+import org.compiere.util.Env;
 import org.opensixen.model.X_C_Order_Header_v;
 
 
@@ -29,7 +30,14 @@ public class OrderHelperContentProvider extends AbstractTableHelperContentProvid
 	 */
 	@Override
 	public TableModel getTableModel(MQuery query) {
+		GridTab gt = getPanel().getGridController().getMTab();
+		query.addRestriction(X_C_Order_Header_v.COLUMNNAME_IsSOTrx, MQuery.EQUAL, Env.isSOTrx(ctx, gt.getWindowNo()));	
+		
 		model = new OrderTableModel(ctx, query);
+		
+		
+		//model.setSoTrx();		
+		
 		return model;
 	}
 
@@ -60,6 +68,10 @@ public class OrderHelperContentProvider extends AbstractTableHelperContentProvid
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		
+		if (cmd.equals("cmd_select_record"))	{
+			return;
+		}
+		
 		if (cmd.equals("Find"))	{
 			GridTab gt = getPanel().getGridController().getMTab();
 			MQuery query = gt.getQuery();
@@ -72,6 +84,8 @@ public class OrderHelperContentProvider extends AbstractTableHelperContentProvid
 			System.out.println("Filter: " + filter);
 		}
 		
+		model.reload();
+		updateUI();
 		
 		
 	}
@@ -89,8 +103,9 @@ public class OrderHelperContentProvider extends AbstractTableHelperContentProvid
 		}
 
 		// Cargamos el modelo
-		PO[] o = model.getModel(null);
-		X_C_Order_Header_v	 order = (X_C_Order_Header_v) o[index];
+		//PO[] o = model.getModel(null);
+		 
+		X_C_Order_Header_v	 order = (X_C_Order_Header_v) model.getValueAt(index);
 		if (order == null)	{		
 			return;
 		}

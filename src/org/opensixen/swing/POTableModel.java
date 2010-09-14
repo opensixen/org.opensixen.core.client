@@ -70,20 +70,21 @@ public abstract class POTableModel extends DefaultTableModel implements OTableMo
 
 	public void setQuery(MQuery query)	{
 		this.query = query;
-		reload();
 	}
 	
 	public void reload()	{
 		this.model = null;
 		this.model = getModel(query);
+		indexGroups();
 	}
 	
 	public static String getWhere(MQuery query)	{
 		String where = query.getWhereClause(false);
 		
 		// A veces se olvida de no hacer qualifed...
-		
-		where = where.replaceAll(query.getTableName()+".", "");
+		if (where.contains(query.getTableName()+"."))	{
+			where = where.replaceAll(query.getTableName()+".", "");
+		}
 		return where;
 	}
 	
@@ -153,6 +154,11 @@ public abstract class POTableModel extends DefaultTableModel implements OTableMo
 		}
 		return null;
 	}
+	
+	
+	public PO getValueAt(int rowIndex)	{
+		return model[rowIndex];
+	}
 
 	/* (non-Javadoc)
 	 * @see javax.swing.table.TableModel#setValueAt(java.lang.Object, int, int)
@@ -205,6 +211,9 @@ public abstract class POTableModel extends DefaultTableModel implements OTableMo
 	 * Create index for the groups 
 	 */
 	private void indexGroups() {
+		if (groupDefinitions == null)	{
+			return;
+		}
 		
 		// New array, with records and null rows for group header and footer variables.
 		ArrayList<PO> poArray = new ArrayList<PO>();
