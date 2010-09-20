@@ -97,6 +97,11 @@ public class OrderLinesTableModel extends POTableModel {
 		String[] order = {"line"};
 		
 		List<X_C_Order_LineTax_v> l = POFactory.getList(ctx, X_C_Order_LineTax_v.class, params);
+		
+		if (l == null)	{
+			return null;
+		}
+		
 		PO[] a = l.toArray(new PO[l.size()]);
 		return a;
 	}
