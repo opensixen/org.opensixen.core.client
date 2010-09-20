@@ -52,7 +52,7 @@ public abstract class POTableModel extends DefaultTableModel implements OTableMo
 		}
 		
 		// if model is void, not inspect
-		if (model.length == 0)	{
+		if (model == null || model.length == 0)	{
 			return;
 		}
 		PO po = model[0];
