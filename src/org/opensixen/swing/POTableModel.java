@@ -23,6 +23,7 @@ import org.opensixen.interfaces.OTableModel;
 import org.opensixen.model.ColumnDefinition;
 import org.opensixen.model.GroupDefinition;
 import org.opensixen.model.GroupVariable;
+import org.opensixen.model.QParam;
 
 /**
  * @author harlock
@@ -31,6 +32,7 @@ import org.opensixen.model.GroupVariable;
 public abstract class POTableModel extends DefaultTableModel implements OTableModel {
 
 	protected Properties ctx;
+	
 	private PO[] model;
 	private ColumnDefinition[] columnDefinitions;
 	private List<GroupDefinition> groupDefinitions;
@@ -40,13 +42,32 @@ public abstract class POTableModel extends DefaultTableModel implements OTableMo
 	
 	private MQuery query;
 	
-	public POTableModel(Properties ctx, MQuery query) {
+	/**
+	 * Real constructor
+	 * @param ctx
+	 */
+	public POTableModel(Properties ctx) {
 		super();
 		this.ctx = ctx;
-		this.query = query;
-		this.model = getModel(query);
+		
 		this.columnDefinitions =  getColumnDefinitions();
 		this.groupDefinitions = getGroupDefinitions();
+	}
+	
+	
+	public POTableModel(Properties ctx, MQuery query) {
+		this(ctx);
+		this.query = query;
+		initTableModel();
+	}
+	
+	/**
+	 * Setup the table Model
+	 * Must be called before any other method.
+	 */
+	protected void initTableModel()	{
+		this.model = getModel();
+		
 		if (groupDefinitions != null)	{
 			indexGroups();
 		}
@@ -65,16 +86,21 @@ public abstract class POTableModel extends DefaultTableModel implements OTableMo
 				columnDefinitions[i].setTitle(column.get_Translation(columnDefinitions[i].getName()));
 			}
 		}
-		
-	}
 
+	}
+	
+	
 	public void setQuery(MQuery query)	{
 		this.query = query;
 	}
 	
+	protected MQuery getQuery()	{
+		return query;
+	}
+	
 	public void reload()	{
 		this.model = null;
-		this.model = getModel(query);
+		this.model = getModel();
 		indexGroups();
 	}
 	
@@ -88,8 +114,11 @@ public abstract class POTableModel extends DefaultTableModel implements OTableMo
 		return where;
 	}
 	
-	
-	protected abstract PO[] getModel(MQuery query);
+	/**
+	 * Get model of data
+	 * @return
+	 */
+	protected abstract PO[] getModel();
 
 	/* (non-Javadoc)
 	 * @see javax.swing.table.TableModel#getRowCount()

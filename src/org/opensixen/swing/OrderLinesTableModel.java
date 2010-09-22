@@ -45,7 +45,7 @@ public class OrderLinesTableModel extends POTableModel {
 	 * @see org.opensixen.swing.POTableModel#getModel(org.compiere.model.MQuery)
 	 */
 	@Override
-	protected PO[] getModel(MQuery query) {				
+	protected PO[] getModel() {				
 		return getLines();
 	}
 

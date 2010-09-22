@@ -39,8 +39,8 @@ public class OrderTableModel extends POTableModel {
 	 * @see org.opensixen.swing.AbstractTableModel#getModel()
 	 */
 	@Override
-	protected PO[] getModel(MQuery query) {
-		return getOrders(query);
+	protected PO[] getModel() {
+		return getOrders(getQuery());
 	}
 
 	/* (non-Javadoc)

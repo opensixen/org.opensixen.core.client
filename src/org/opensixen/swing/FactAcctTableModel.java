@@ -84,10 +84,10 @@ public class FactAcctTableModel extends POTableModel {
 	 * @see org.opensixen.swing.POTableModel#getModel(org.compiere.model.MQuery)
 	 */
 	@Override
-	protected PO[] getModel(MQuery query) {		
+	protected PO[] getModel() {		
 		
 		// Obtenemos el asiento correspondiente al documento.
-		QParam[] params = {new QParam(query.getWhereClause(false))};
+		QParam[] params = {new QParam(getQuery().getWhereClause(false))};
 		list = POFactory.getList(ctx, MVFactAcct.class, params);
 		if (list == null)	{
 			return new PO[0];
