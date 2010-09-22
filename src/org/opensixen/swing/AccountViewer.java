@@ -10,6 +10,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -33,6 +35,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.opensixen.model.I_V_Fact_Acct;
+import org.opensixen.model.MVFactAcct;
 import org.opensixen.osgi.interfaces.IAccountViewer;
 
 /**
@@ -133,11 +136,12 @@ public class AccountViewer extends CFrame implements IAccountViewer {
 		headerPanel.add(l);
 
 		// Add the table for main fact_acct
-		OTable table = new OTable(Env.getCtx());
+		final OTable table = new OTable(Env.getCtx());
 
 		table.setModel(tableModel);
 
 		table.setupTable();
+		
 		table.setFillsViewportHeight(true);
 		table.setPreferredScrollableViewportSize(new Dimension(800, 80));
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -146,6 +150,27 @@ public class AccountViewer extends CFrame implements IAccountViewer {
 		container.add(scrollPane, BorderLayout.CENTER);
 
 		table.packAll();
+		
+		table.addMouseListener(new MouseListener() {			
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+			@Override
+			public void mousePressed(MouseEvent e) {}			
+			@Override
+			public void mouseExited(MouseEvent e) {}			
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2)	{
+					int index = table.rowAtPoint(e.getPoint());
+					MVFactAcct fact = (MVFactAcct) tableModel.getValueAt(index);
+					AccountDetailViewer viewer = new AccountDetailViewer(ctx, fact.getC_ElementValue_ID(), fact.getDateAcct(), fact.getDateAcct());
+				}
+				
+			}
+		});
 
 		CPanel footerPanel = new CPanel();
 		footerPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
