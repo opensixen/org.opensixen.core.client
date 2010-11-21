@@ -3,85 +3,52 @@
  */
 package org.opensixen.swing;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.logging.Level;
 
 import javax.swing.event.TableModelListener;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.compiere.util.CLogger;
 import org.opensixen.interfaces.IBeanProvider;
 import org.opensixen.interfaces.OTableModel;
 import org.opensixen.model.ColumnDefinition;
 
 /**
- * @author harlock
- * @param <T>
+ * @author Eloy Gomez
  *
  */
 public class BeanTableModel implements OTableModel {
 
+	private CLogger log = CLogger.getCLogger(getClass());
+	
 	private ColumnDefinition[] columnDefinitions;
 	
 	private IBeanProvider beanProvider;
 	
 	private Object[] model;
-	
-	private HashMap<String, Method> readMethods = new HashMap<String, Method>();
-	private HashMap<String, Method> writeMethods = new HashMap<String, Method>();
-	
-	
+		
 
 	public BeanTableModel(IBeanProvider beanProvider, ColumnDefinition[] columnDefinitions) {
 		super();
 		this.beanProvider = beanProvider;
 		this.columnDefinitions = columnDefinitions;
-		model = beanProvider.getModel();
-		if (model != null)	{
-			inspect();
-		}
-		
+		model = beanProvider.getModel();		
 	}
 
-	/**
-	 * Inspecciona el modelo para conocer sus propiedades.
-	 */
-	private void inspect()	{
-		BeanInfo info;
-		try {
-			info = Introspector.getBeanInfo(beanProvider.getModelClass(), Introspector.USE_ALL_BEANINFO);			
-		} catch (IntrospectionException e) {
-			throw new RuntimeException("No puedo crear el TableModel", e);
-		}
-		
-		PropertyDescriptor[] propDesc = info.getPropertyDescriptors();
-		for (PropertyDescriptor descriptor: propDesc)	{
-			Method read = descriptor.getReadMethod();
-			Method write = descriptor.getWriteMethod();
-			String name = descriptor.getName();
-			readMethods.put(name, read);
-			writeMethods.put(name, write);
-		}
-	}
-	
+
 	/* (non-Javadoc)
 	 * @see javax.swing.table.TableModel#getValueAt(int, int)
 	 */
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		String name = columnDefinitions[columnIndex].getName();
-		Method read = readMethods.get(name);
-		if (read == null)	{
+		try {
+			return PropertyUtils.getProperty(model[rowIndex], name);
+		}
+		catch (Exception e)	{
+			log.log(Level.SEVERE, "No se encuentra la propiedad: " + name + "[" + columnIndex + "]", e);
 			return null;
 		}
-		try {
-			return read.invoke(model[rowIndex],(Object[])null);
-		} catch (Exception e) {			
-			e.printStackTrace();
-			return null;
-		} 
 	}
 	
 	/* (non-Javadoc)
@@ -131,13 +98,12 @@ public class BeanTableModel implements OTableModel {
 	@Override
 	public void setValueAt(Object value, int rowIndex, int columnIndex) {
 		String name = columnDefinitions[columnIndex].getName();
-		Method write = writeMethods.get(name);
-		Object[] values = {value};
-		try {			
-			write.invoke(model[rowIndex], values);
-		} catch (Exception e) {			
-			e.printStackTrace();
-		} 		
+		try {
+			PropertyUtils.setProperty(model[rowIndex], name, value);
+		}
+		catch (Exception e)	{
+			log.log(Level.SEVERE, "No se encuentra la propiedad: " + name + "[" + columnIndex + "]", e);
+		}	
 	}
 
 	/* (non-Javadoc)
@@ -188,13 +154,5 @@ public class BeanTableModel implements OTableModel {
 	public void setBeanProvider(IBeanProvider beanProvider) {
 		this.beanProvider = beanProvider;
 		model = beanProvider.getModel();
-		if (model != null)	{
-			inspect();
-		}
 	}
-	
-	
-
-	
-
 }
