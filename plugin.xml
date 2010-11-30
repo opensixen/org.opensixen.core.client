@@ -34,5 +34,11 @@
             windowName="Sales Order">
       </provider>
    </extension>
+   <extension
+         point="org.opensixen.osgi.interfaces.IMenuAction">
+      <client
+            class="org.opensixen.core.client.P2MenuAction">
+      </client>
+   </extension>
 
 </plugin>

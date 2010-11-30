@@ -11,4 +11,5 @@ Export-Package: org.opensixen.swing
 Require-Bundle: org.opensixen.base;bundle-version="1.0.0",
  org.opensixen.client;bundle-version="1.0.0",
  org.opensixen.core.common;bundle-version="1.0.0",
- org.opensixen.libs;bundle-version="1.0.0"
+ org.opensixen.libs;bundle-version="1.0.0",
+ org.opensixen.core.p2;bundle-version="1.0.0"
