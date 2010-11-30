@@ -13,6 +13,7 @@ import java.util.Properties;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import org.compiere.apps.ADialog;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CComboBox;
 import org.compiere.swing.CDialog;
@@ -21,6 +22,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.opensixen.p2.IUnitModel;
 import org.opensixen.p2.P2;
+import org.opensixen.p2.P2Updater;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.FilterList;
@@ -43,6 +45,7 @@ public class InstallForm extends CDialog {
 	private CComboBox locationsCombo;
 	private JTable table;
 	private CButton repositoryBtn;
+	private CButton updateBtn;
 	
 	
 	public InstallForm(Properties ctx)	{
@@ -89,6 +92,11 @@ public class InstallForm extends CDialog {
 		installBtn = new CButton(Msg.getMsg(Env.getAD_Language(ctx), "Install"));
 		installBtn.addActionListener(this);
 		btnPanel.add(installBtn);
+		
+		
+		updateBtn = new CButton(Msg.getMsg(Env.getAD_Language(ctx), "Update"));
+		updateBtn.addActionListener(this);
+		btnPanel.add(updateBtn);
 	}
 
 
@@ -108,9 +116,19 @@ public class InstallForm extends CDialog {
 			}
 		}
 		
-		P2.get().install(iunits);
+		if (P2.get().install(iunits))	{
+			ADialog.info(0, this, "Ok");
+		}
+		else {
+			ADialog.error(0, this, "No se han podido instalar las actualizaciones.");
+		}
 	}
 	
+	
+	private void update()	{
+		P2Updater.startupUpdater();
+		ADialog.info(0, this, "Ok");
+	}
 
 	/* (non-Javadoc)
 	 * @see org.compiere.swing.CDialog#actionPerformed(java.awt.event.ActionEvent)
@@ -118,7 +136,7 @@ public class InstallForm extends CDialog {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(installBtn))	{
-			install();
+			install();			
 		}
 		
 		if (e.getSource().equals(repositoryBtn))	{
@@ -128,6 +146,10 @@ public class InstallForm extends CDialog {
 		
 		if (e.getSource().equals(locationsCombo))	{
 			load();
+		}
+		
+		if (e.getSource().equals(updateBtn))	{
+			update();
 		}
 	}
 	
