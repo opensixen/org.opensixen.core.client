@@ -3,8 +3,10 @@
  */
 package org.opensixen.swing;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 
+import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -26,7 +28,9 @@ public class BeanTableModel implements OTableModel {
 	private IBeanProvider beanProvider;
 	
 	private Object[] model;
-		
+	
+	private ArrayList<TableModelListener> tableModelListeners = new ArrayList<TableModelListener>();
+	
 
 	public BeanTableModel(IBeanProvider beanProvider, ColumnDefinition[] columnDefinitions) {
 		super();
@@ -111,8 +115,7 @@ public class BeanTableModel implements OTableModel {
 	 */
 	@Override
 	public void addTableModelListener(TableModelListener l) {
-		// TODO Auto-generated method stub
-		
+		tableModelListeners.add(l);		
 	}
 
 	/* (non-Javadoc)
@@ -120,8 +123,7 @@ public class BeanTableModel implements OTableModel {
 	 */
 	@Override
 	public void removeTableModelListener(TableModelListener l) {
-		// TODO Auto-generated method stub
-		
+		tableModelListeners.remove(l);		
 	}
 
 	/* (non-Javadoc)
@@ -130,7 +132,10 @@ public class BeanTableModel implements OTableModel {
 	@Override
 	public void reload() {
 		beanProvider.reload();
-		this.model = beanProvider.getModel();		
+		this.model = beanProvider.getModel();
+		for (TableModelListener listener:tableModelListeners)	{
+			listener.tableChanged(new TableModelEvent(this));
+		}
 	}
 
 	/* (non-Javadoc)
