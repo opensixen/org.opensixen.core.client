@@ -62,6 +62,10 @@
 package org.opensixen.swing;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.net.URI;
 import java.util.ArrayList;
@@ -70,14 +74,20 @@ import java.util.Properties;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 
 import org.compiere.apps.ADialog;
 import org.compiere.swing.CButton;
 import org.compiere.swing.CComboBox;
 import org.compiere.swing.CDialog;
+import org.compiere.swing.CLabel;
 import org.compiere.swing.CPanel;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.jdesktop.swingx.JXTaskPane;
 import org.opensixen.p2.IUnitModel;
 import org.opensixen.p2.P2;
 import org.opensixen.p2.P2Updater;
@@ -99,17 +109,31 @@ public class InstallForm extends CDialog {
 
 	private BasicEventList<IUnitModel> eventList;
 	private Properties ctx;
+	
+	/**
+	 * Descripción de campos
+	 */
+
 	private CButton installBtn;
+	
+	private CLabel locationLabel = new CLabel();;
 	private CComboBox locationsCombo;
+	
 	private JTable table;
+	
 	private CButton repositoryBtn;
 	private CButton updateBtn;
+	
+	//Paneles
+	
+	private JXTaskPane topPanel = new JXTaskPane();
 	
 	
 	public InstallForm(Properties ctx)	{
 		this.ctx = ctx;
 		jbInit();
 		load();
+		//autoSize();
 		pack();
 	}
 	
@@ -117,18 +141,26 @@ public class InstallForm extends CDialog {
 	private void jbInit()	{
 		setLayout(new BorderLayout(10, 10));
 		
-		CPanel topPanel = new CPanel();
+		topPanel.setTitle(Msg.translate(Env.getCtx(), "Repositories"));
+		topPanel.setLayout(new GridBagLayout());
 		
 		add(topPanel, BorderLayout.NORTH);
 		
+
 		locationsCombo = new CComboBox(P2.get().getRepositories());
 		locationsCombo.addActionListener(this);
-		topPanel.add(locationsCombo);
+		locationLabel.setText(Msg.translate(Env.getCtx(), "Repositories"));
+		locationLabel.setLabelFor(locationsCombo);
+		
+		topPanel.add( locationLabel,new GridBagConstraints( 0,0,1,1,0.0,0.0,GridBagConstraints.WEST,GridBagConstraints.NONE,new Insets( 2,2,2,2 ),0,0 ));
+		topPanel.add( locationsCombo,new GridBagConstraints( 1,0,1,1,0.3,0.0,GridBagConstraints.WEST,GridBagConstraints.BOTH,new Insets( 2,2,2,20 ),0,0 ));
+
 		
 		repositoryBtn = new CButton(Msg.getMsg(ctx, "Manage Repositories"));
 		repositoryBtn.addActionListener(this);
-		topPanel.add(repositoryBtn);
-		
+
+		topPanel.add( repositoryBtn,new GridBagConstraints( 1,1,1,1,0.0,0.0,GridBagConstraints.CENTER,GridBagConstraints.NONE,new Insets( 10,1,2,100 ),0,0 ));
+
 		
 		CPanel treePanel = new CPanel();
 		add(treePanel, BorderLayout.CENTER);
@@ -175,17 +207,17 @@ public class InstallForm extends CDialog {
 		}
 		
 		if (P2.get().install(iunits))	{
-			ADialog.info(0, this, "Ok");
+			ADialog.info(0, this, Msg.getMsg(Env.getAD_Language(ctx), "OK"));
 		}
 		else {
-			ADialog.error(0, this, "No se han podido instalar las actualizaciones.");
+			ADialog.error(0, this, Msg.getMsg(Env.getAD_Language(ctx), "Updates are not correctly installed "));
 		}
 	}
 	
 	
 	private void update()	{
 		P2Updater.startupUpdater();
-		ADialog.info(0, this, "Ok");
+		ADialog.info(0, this, Msg.getMsg(Env.getAD_Language(ctx), "OK"));
 	}
 
 	/* (non-Javadoc)
@@ -210,7 +242,6 @@ public class InstallForm extends CDialog {
 			update();
 		}
 	}
-	
 	
 	
 }

@@ -63,8 +63,11 @@ package org.opensixen.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 
@@ -81,7 +84,9 @@ import org.compiere.swing.CLabel;
 import org.compiere.swing.CPanel;
 import org.compiere.swing.CScrollPane;
 import org.compiere.swing.CTextField;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.jdesktop.swingx.JXTaskPane;
 import org.opensixen.interfaces.IBeanProvider;
 import org.opensixen.model.ColumnDefinition;
 import org.opensixen.p2.P2;
@@ -96,8 +101,15 @@ import org.opensixen.p2.RepositoryModel;
  */
 public class ManageRepositories extends CDialog {
 
+	/**
+	 * Descripción de campos
+	 */
+	private CLabel labelName = new CLabel();
 	private CTextField fName;
+	
+	private CLabel labelURI = new CLabel();
 	private CTextField fURI;
+	
 	private Properties ctx;
 	private CButton addBtn;
 	private CButton removeBtn;
@@ -105,6 +117,7 @@ public class ManageRepositories extends CDialog {
 	private RepositoryBeanProvider modelProvider;
 	private BeanTableModel tableModel;
 	
+	private JXTaskPane topPanel = new JXTaskPane();
 	
 	private RepositoryModel selected;
 
@@ -118,24 +131,31 @@ public class ManageRepositories extends CDialog {
 	private void jbInit()	{
 		setLayout(new BorderLayout(10, 10));
 		
+		topPanel.setTitle(Msg.translate(Env.getCtx(), "URL"));
 		
-		CPanel topPanel = new CPanel();
-		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+		//topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
 		add(topPanel, BorderLayout.NORTH);
 		
 		CPanel formPanel = new CPanel();
-		formPanel.setLayout(new GridLayout(2, 2, 5, 5));
+		//formPanel.setLayout(new GridLayout(2, 2, 5, 5));
+		formPanel.setLayout(new GridBagLayout());
 		topPanel.add(formPanel);
 		
-		CLabel label = new CLabel(Msg.getMsg(ctx, "Name"));
-		formPanel.add(label);		
+		labelName.setText(Msg.getMsg(ctx, "Name"));	
 		fName = new CTextField(20);
-		formPanel.add(fName);
+		labelName.setLabelFor(fName);
+
 		
-		label = new CLabel(Msg.getMsg(ctx, "URL"));
-		formPanel.add(label);
+		labelURI.setText(Msg.getMsg(ctx, "URL"));
 		fURI = new CTextField(20);
-		formPanel.add (fURI);
+		labelURI.setLabelFor(fURI);
+		
+		
+		formPanel.add( labelName,new GridBagConstraints( 0,0,1,1,0.0,0.0,GridBagConstraints.WEST,GridBagConstraints.NONE,new Insets( 2,2,2,2 ),0,0 ));
+		formPanel.add( fName,new GridBagConstraints( 1,0,1,1,0.3,0.0,GridBagConstraints.WEST,GridBagConstraints.BOTH,new Insets( 2,2,2,20 ),0,0 ));
+		formPanel.add( labelURI,new GridBagConstraints( 0,1,1,1,0.0,0.0,GridBagConstraints.WEST,GridBagConstraints.NONE,new Insets( 2,2,2,2 ),0,0 ));
+		formPanel.add( fURI,new GridBagConstraints( 1,1,1,1,0.3,0.0,GridBagConstraints.WEST,GridBagConstraints.BOTH,new Insets( 2,2,2,20 ),0,0 ));
+
 		
 		CPanel topBtnPanel = new CPanel();
 		topPanel.add(topBtnPanel);
@@ -157,7 +177,7 @@ public class ManageRepositories extends CDialog {
 		table.setModel(tableModel);
 		table.setupTable();
 		table.addMouseListener(this);
-		
+		table.autoSize(false);
 		CScrollPane scroll = new CScrollPane(table);		
 		mainPanel.add(scroll);
 		
@@ -185,7 +205,7 @@ public class ManageRepositories extends CDialog {
 				try {
 					uri = new URI(fURI.getText());
 				} catch (URISyntaxException e1) {
-					ADialog.error(-1, this, "Invalid URL");
+					ADialog.error(-1, this, Msg.getMsg(ctx, "Invalid URL"));
 					return;
 				}
 				P2.get().addRepository(uri, fName.getText());
@@ -221,6 +241,7 @@ public class ManageRepositories extends CDialog {
 		
 		modelProvider.reload();
 		table.repaint();
+		table.autoSize(false);
 	}
 	
 	
