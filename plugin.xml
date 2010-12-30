@@ -40,5 +40,13 @@
             class="org.opensixen.core.client.P2MenuAction">
       </client>
    </extension>
+   <extension
+         id="org.opensixen.core.client.RecordNoteAppsAction"
+         name="org.opensixen.core.client.RecordNoteAppsAction"
+         point="org.opensixen.osgi.interfaces.IAppsAction">
+      <appsAction
+            class="org.opensixen.core.client.RecordNoteAppsAction">
+      </appsAction>
+   </extension>
 
 </plugin>
