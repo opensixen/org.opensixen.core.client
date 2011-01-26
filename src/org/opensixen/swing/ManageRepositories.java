@@ -70,6 +70,8 @@ import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -99,7 +101,7 @@ import org.opensixen.p2.RepositoryModel;
  * Indeos Consultoria http://www.indeos.es
  *
  */
-public class ManageRepositories extends CDialog {
+public class ManageRepositories extends CDialog implements WindowListener{
 
 	/**
 	 * Descripción de campos
@@ -176,6 +178,8 @@ public class ManageRepositories extends CDialog {
 		CScrollPane scroll = new CScrollPane(table);		
 		mainPanel.add(scroll);
 		
+		this.addWindowListener(this);
+		
 	}
 		
 	/**
@@ -248,6 +252,33 @@ public class ManageRepositories extends CDialog {
 		table.addMouseListener(this);
 		table.autoSize(false);
 	}
+
+	@Override
+	public void windowActivated(WindowEvent arg0) {}
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		if(this.getParent() instanceof InstallForm){
+			InstallForm form=(InstallForm)this.getParent();
+			form.refresh();
+		}
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent arg0) {}
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {}
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {}
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {}
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {}
 	
 	
 }

@@ -219,6 +219,23 @@ public class InstallForm extends CDialog {
 		P2Updater.startupUpdater();
 		ADialog.info(0, this, Msg.getMsg(Env.getAD_Language(ctx), "OK"));
 	}
+	
+	/**
+	 * Actualiza el combobox de repositorios
+	 */
+	
+	public void refresh(){
+		//Eliminamos los items actuales y la posibilidad de que salte el evento
+		locationsCombo.removeActionListener(this);
+		locationsCombo.removeAllItems();
+		
+		//Añadimos los repositorios actualizados
+		for(URI uri :P2.get().getRepositories()){
+			locationsCombo.addItem(uri);
+		}
+	
+		locationsCombo.addActionListener(this);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.compiere.swing.CDialog#actionPerformed(java.awt.event.ActionEvent)
