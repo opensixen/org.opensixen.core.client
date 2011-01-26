@@ -172,12 +172,7 @@ public class ManageRepositories extends CDialog {
 		add(mainPanel, BorderLayout.CENTER);
 		
 		table = new OTable(ctx);
-		modelProvider = new RepositoryBeanProvider();
-		tableModel = new BeanTableModel(modelProvider, getColumnDefinitions());
-		table.setModel(tableModel);
-		table.setupTable();
-		table.addMouseListener(this);
-		table.autoSize(false);
+		refreshProvider();
 		CScrollPane scroll = new CScrollPane(table);		
 		mainPanel.add(scroll);
 		
@@ -239,12 +234,20 @@ public class ManageRepositories extends CDialog {
 			fURI.setText(selected.getLocation().toString());
 		}
 		
-		modelProvider.reload();
+		//modelProvider.reload();
+		refreshProvider();
 		table.repaint();
 		table.autoSize(false);
 	}
 	
-	
+	private void refreshProvider(){
+		modelProvider = new RepositoryBeanProvider();
+		tableModel = new BeanTableModel(modelProvider, getColumnDefinitions());
+		table.setModel(tableModel);
+		table.setupTable();
+		table.addMouseListener(this);
+		table.autoSize(false);
+	}
 	
 	
 }
