@@ -7,7 +7,7 @@
          point="org.opensixen.osgi.interfaces.IHelperContentProvider">
       <provider
             class="org.opensixen.swing.OrderHelperContentProvider"
-            windowName="Sales Order">
+            windowName="Sales OrderX">
       </provider>
    </extension>
    <extension
@@ -16,7 +16,7 @@
          point="org.opensixen.osgi.interfaces.IHelperContentProvider">
       <provider
             class="org.opensixen.swing.AccountDataHelperContentProvider"
-            windowName="Account Element">
+            windowName="Account ElementX">
       </provider>
    </extension>
    <extension
@@ -31,7 +31,7 @@
          point="org.opensixen.osgi.interfaces.IHelperContentProvider">
       <provider
             class="org.opensixen.swing.OrderLinesHelperContentProvider"
-            windowName="Sales Order">
+            windowName="Sales OrderX">
       </provider>
    </extension>
    <extension
