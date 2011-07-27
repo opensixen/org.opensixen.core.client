@@ -107,7 +107,8 @@ import ca.odell.glazedlists.swing.EventTableModel;
  */
 public class InstallForm extends CDialog {
 
-	private BasicEventList<IUnitModel> eventList;
+	private BasicEventList<IUnitModel> repoAppsList;
+	private BasicEventList<IUnitModel> installedAppsList;
 	private Properties ctx;
 	
 	/**
@@ -166,14 +167,21 @@ public class InstallForm extends CDialog {
 		add(treePanel, BorderLayout.CENTER);
 		
 		
-		// GlazzedList
-		eventList = new BasicEventList<IUnitModel>();
-		FilterList<IUnitModel> filterList = new FilterList<IUnitModel>(eventList);
-		EventTableModel<IUnitModel> tableModel = new  EventTableModel<IUnitModel>(filterList, new IUnitTableFormat());
-		table = new JTable(tableModel);
+		// Installed apps
+		installedAppsList = new BasicEventList<IUnitModel>();
+		FilterList<IUnitModel> installedFilterList = new FilterList<IUnitModel>(installedAppsList);
+		EventTableModel<IUnitModel> installedTableModel = new  EventTableModel<IUnitModel>(installedFilterList, new IUnitTableFormat());
+		table = new JTable(installedTableModel);		
+		treePanel.add(new JScrollPane(table));
 		
-		JScrollPane scrollPane = new JScrollPane(table);
-		treePanel.add(scrollPane);
+		
+		// Available iu
+		repoAppsList = new BasicEventList<IUnitModel>();
+		FilterList<IUnitModel> repoFilterList = new FilterList<IUnitModel>(repoAppsList);
+		EventTableModel<IUnitModel> tepoTableModel = new  EventTableModel<IUnitModel>(repoFilterList, new IUnitTableFormat());
+		table = new JTable(tepoTableModel);		
+		treePanel.add(new JScrollPane(table));
+		
 		
 		
 		CPanel btnPanel = new CPanel();
@@ -190,17 +198,27 @@ public class InstallForm extends CDialog {
 	}
 
 
+	/**
+	 * Load table data
+	 */
 	private void load()	{
+		// Fill repository IU
 		URI location = (URI) locationsCombo.getSelectedItem();
-		eventList.clear();
-		eventList.addAll(P2.get().getAllIUnit(location));		
+		repoAppsList.clear();
+		// Load  Installable units
+		repoAppsList.addAll(P2.get().getAllIUnit(location));
+		
+		
+		// Fill installed apps
+		installedAppsList.clear();
+		installedAppsList.addAll(P2.get().getInstalledModel());
 	}
 
 	
 	private void install()	{
 		ArrayList<IUnitModel> iunits = new ArrayList<IUnitModel>();
-		for (int i=0; i < eventList.size(); i++)	{
-			IUnitModel iunit = eventList.get(i);
+		for (int i=0; i < repoAppsList.size(); i++)	{
+			IUnitModel iunit = repoAppsList.get(i);
 			if (iunit.isSelected())	{
 				iunits.add(iunit);
 			}
